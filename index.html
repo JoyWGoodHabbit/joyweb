@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JoStores ID</title>
+<style>
+:root{--bg:#0d0b1e;--bg2:#1b1245;--card:rgba(255,255,255,.07);--bd:rgba(255,255,255,.14);--tx:#f4f2ff;--mut:#a9a4d0;--a:#7c5cff;--b:#00d4ff}
+@media (prefers-color-scheme:light){:root{--bg:#f3f1ff;--bg2:#dcd5ff;--card:rgba(255,255,255,.8);--bd:rgba(80,60,200,.18);--tx:#1c1740;--mut:#5d5890}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);background:radial-gradient(circle at 20% 0%,var(--bg2),var(--bg) 60%) fixed;padding:32px 16px 48px}
+.wrap{max-width:980px;margin:0 auto;text-align:center}
+h1{font-size:clamp(28px,6vw,46px);margin:8px 0;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin:0 0 32px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:28px 20px;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card:hover{transform:translateY(-6px);border-color:var(--a);box-shadow:0 14px 34px rgba(124,92,255,.35)}
+.tag{font-size:12px;letter-spacing:.12em;color:var(--mut);text-transform:uppercase}
+.av{width:120px;height:120px;margin:16px auto;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:46px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 0 5px var(--card),0 0 0 7px var(--a)}
+.av img{width:100%;height:100%;object-fit:cover}
+.name{font-size:21px;font-weight:700;margin:6px 0 4px;word-break:break-word}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:3px 12px;border-radius:999px;margin:4px 0 6px;background:var(--card);border:1px solid var(--bd)}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e}
+.st.off{color:var(--mut)}.st.off::before{background:#8b8b99;box-shadow:none}
+.btn{display:inline-block;margin-top:14px;padding:10px 22px;border-radius:999px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--a),var(--b))}
+.empty{opacity:.6}
+.empty .av{background:var(--card);color:var(--mut);box-shadow:0 0 0 2px var(--bd)}
+#ed{display:none;max-width:600px;margin:36px auto 0;text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:20px}
+#ed.on{display:block}
+#ed p{color:var(--mut);font-size:13px;margin:0 0 12px}
+.slot{margin-bottom:14px}
+input[type=text],textarea{width:100%;margin-top:6px;padding:10px 12px;border-radius:10px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit}
+textarea{font-family:ui-monospace,Menlo,monospace;font-size:12px;height:190px}
+label{font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎮 Join My Profile</h1>
+  <p class="sub">Klik kartu untuk langsung menuju profil Roblox saya.</p>
+  <div class="grid" id="grid"></div>
+
+  <!-- Panel ini hanya muncul kalau kamu buka alamat dengan #edit di belakangnya -->
+  <div id="ed">
+    <b>Mode edit (hanya kamu)</b>
+    <p>Isi kolom di bawah, lihat hasilnya langsung, lalu salin kode di kotak bawah dan tempel menggantikan bagian SLOTS di file index.html.</p>
+    <div id="fields"></div>
+    <b>Kode untuk ditempel:</b>
+    <textarea id="out" readonly></textarea>
+  </div>
+</div>
+<script>
+// ===== ISI DI SINI: yang dilihat semua pengunjung =====
+// img = link gambar langsung (berakhiran .png/.jpg/.webp) atau nama file di folder yang sama, mis. "avatar1.png"
+// on  = true untuk Active, false untuk Off
+var SLOTS = [
+  {name: "Rod",  link:"https://www.roblox.com.ml/users/222243855493/profile", img:"https://tr.rbxcdn.com/30DAY-AvatarHeadshot-7BAAFDC5AEA29EE2ABCAD427B0296C56-Png/150/150/AvatarHeadshot/Png/noFilter", on:true},
+  {name:"Raim ",  link:"https://roblox.com.bz/users/2069842666/profile", img:"https://tr.rbxcdn.com/30DAY-AvatarHeadshot-6CD44ADBF990521C8EC54FB7EE56BB4E-Png/150/150/AvatarHeadshot/Webp/noFilter", on:true},
+  {name:"OFF", link:"", img:"", on:false}
+];
+// =======================================================
+
+function fix(u){u=(u||"").trim();if(!u)return"";return /^https?:\/\//i.test(u)?u:"https://"+u;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]});}
+function render(){
+  var g=document.getElementById("grid");g.innerHTML="";
+  SLOTS.forEach(function(s,i){
+    var url=fix(s.link),nm=(s.name||"").trim()||("Slot "+(i+1)),L=nm.charAt(0).toUpperCase();
+    var img=(s.img||"").trim();
+    var el=document.createElement(url?"a":"div");el.className="card"+(url?"":" empty");
+    if(url){el.href=url;el.target="_blank";el.rel="noopener noreferrer";}
+    el.innerHTML='<div class="tag">Slot '+(i+1)+'</div>'
+      +'<div class="av">'+(img?'<img src="'+esc(img)+'" alt="'+esc(L)+'" onerror="this.parentNode.textContent=this.alt">':(url?esc(L):"+"))+'</div>'
+      +'<div class="name">'+esc(nm)+'</div>'
+      +(url?'<div class="st '+(s.on===false?"off":"on")+'">'+(s.on===false?"Off":"Active")+'</div><br><span class="btn">Join / Lihat Profil →</span>':'<div class="tag">Belum diisi</div>');
+    g.appendChild(el);
+  });
+}
+function editor(){
+  document.getElementById("ed").className="on";
+  var f=document.getElementById("fields");
+  SLOTS.forEach(function(s,i){
+    var d=document.createElement("div");d.className="slot";
+    d.innerHTML='<b>Slot '+(i+1)+'</b>'
+      +'<input type="text" id="n'+i+'" placeholder="Nama" value="'+esc(s.name)+'">'
+      +'<input type="text" id="l'+i+'" placeholder="Link profil Roblox" value="'+esc(s.link)+'">'
+      +'<input type="text" id="g'+i+'" placeholder="Link gambar avatar (.png/.jpg)" value="'+esc(s.img)+'">'
+      +'<label><input type="checkbox" id="o'+i+'"'+(s.on===false?'':' checked')+'> Status Active</label>';
+    d.addEventListener("input",sync);d.addEventListener("change",sync);
+    f.appendChild(d);
+  });
+  sync();
+}
+function sync(){
+  SLOTS=SLOTS.map(function(_,i){return{name:document.getElementById("n"+i).value,link:document.getElementById("l"+i).value,img:document.getElementById("g"+i).value,on:document.getElementById("o"+i).checked};});
+  render();
+  document.getElementById("out").value="var SLOTS = [\n"+SLOTS.map(function(s){return"  "+JSON.stringify(s)}).join(",\n")+"\n];";
+}
+render();
+if(location.hash==="#edit")editor();
+</script>
+</body>
+</html>
